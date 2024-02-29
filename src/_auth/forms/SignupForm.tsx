@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
 import { SignupValidation } from "@/lib/validation"
 import Loader from "@/components/shared/Loader"
+import { createUserAccount } from "@/lib/appwrite/api"
 
 const SignupForm = () => {
-  const isLoading = true;
+  const isLoading = false;
   //Form definition
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
@@ -23,7 +24,11 @@ const SignupForm = () => {
   });
   //Submit handler
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
-    // const newUser = await createUserAccount(values);
+    const newUser = await createUserAccount(values);
+
+    if (!newUser) {
+      return;
+    }
   }
    
   return (

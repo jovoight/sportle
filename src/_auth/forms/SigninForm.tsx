@@ -1,16 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Link, useNavigate } from "react-router-dom"
-
-import { useToast } from "@/components/ui/use-toast"
+import { useForm } from "react-hook-form"
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { useToast } from "@/components/ui/use-toast"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useForm } from "react-hook-form"
-import { SignupValidation as SigninValidation } from "@/lib/validation"
 import Loader from "@/components/shared/Loader"
+
+import { SigninValidation } from "@/lib/validation"
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutations"
+
 import { useUserContext } from "@/context/AuthContext"
 
 const SigninForm = () => {
@@ -18,7 +19,7 @@ const SigninForm = () => {
   const navigate = useNavigate();
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
-  const { mutateAsync: signInAccount, isPending } = useSignInAccount();
+  const { mutateAsync: signInAccount } = useSignInAccount();
   //Form definition
   const form = useForm<z.infer<typeof SigninValidation>>({
     resolver: zodResolver(SigninValidation),
@@ -28,7 +29,7 @@ const SigninForm = () => {
     },
   });
   //Submit handler
-  async function onSubmit(values: z.infer<typeof SigninValidation>) {
+  const onSubmit = async (values: z.infer<typeof SigninValidation>) => {
     const session = await signInAccount({
       email: values.email,
       password: values.password
